@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whisper Transcription</title>
+    <script>
+        let isRecording = false;
+
+        async function toggleRecording() {
+            const button = document.getElementById("record-btn");
+            if (!isRecording) {
+                const response = await fetch("/start", { method: "POST" });
+                if (response.ok) {
+                    button.textContent = "Stop Recording";
+                    isRecording = true;
+                }
+            } else {
+                const response = await fetch("/stop", { method: "POST" });
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById("transcription").textContent = "Transcription: " + data.transcription;
+                    button.textContent = "Start Recording";
+                    isRecording = false;
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Whisper Transcription</h1>
+    <button id="record-btn" onclick="toggleRecording()">Start Recording</button>
+    <p id="transcription"></p>
+</body>
+</html>
